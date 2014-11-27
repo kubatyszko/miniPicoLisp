@@ -3,6 +3,7 @@
  */
 
 #include "pico.h"
+#include "stdio.h"
 
 /* Globals */
 int Chr, Trace;
@@ -703,8 +704,8 @@ any doOpt(any ex __attribute__((unused))) {
 any loadAll(any ex) {
    any x = Nil;
 
-   while (*AV  &&  strcmp(*AV,"-") != 0)
-      x = load(ex, 0, mkStr(*AV++));
+   //while (*AV  &&  strcmp(*AV,"-") != 0)
+      //x = load(ex, 0, mkStr(*AV++));
    return x;
 }
 
@@ -713,8 +714,13 @@ int main(int ac, char *av[]) {
    int i;
    char *p;
 
-   AV0 = *av++;
-   AV = av;
+   setbuf(stdout, NULL);
+
+   printf("Minipicolisp says Hello!\r\n");
+
+
+   //AV0 = *av++;
+   //AV = av;
    heapAlloc();
    Intern[0] = Intern[1] = Transient[0] = Transient[1] = Nil;
    intern(Nil, Intern);
@@ -724,17 +730,20 @@ int main(int ac, char *av[]) {
    for (i = 1; i < RAMS; i += 2)
       if (Ram[i] != (any)(Ram + i))
          intern((any)(Ram + i), Intern);
-   if (ac >= 2 && strcmp(av[ac-2], "+") == 0)
+/* if (ac >= 2 && strcmp(av[ac-2], "+") == 0)
       val(Dbg) = T,  av[ac-2] = NULL;
    if (av[0] && *av[0] != '-' && (p = strrchr(av[0], '/')) && !(p == av[0]+1 && *av[0] == '.')) {
       Home = malloc(p - av[0] + 2);
       memcpy(Home, av[0], p - av[0] + 1);
       Home[p - av[0] + 1] = '\0';
    }
+*/
+
    InFile = stdin,  Env.get = getStdin;
    OutFile = stdout,  Env.put = putStdout;
    ApplyArgs = cons(cons(consSym(Nil,0), Nil), Nil);
    ApplyBody = cons(Nil,Nil);
+
    if (!setjmp(ErrRst))
       loadAll(NULL);
    while (!feof(stdin))

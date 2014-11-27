@@ -12,7 +12,7 @@
 #include <stdint.h>
 
 #ifndef CELLS
-#define CELLS (1024*1024/sizeof(cell))
+#define CELLS (1024*32/sizeof(cell))
 #endif
 
 #define WORD ((int)sizeof(long))
